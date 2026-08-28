@@ -1,44 +1,42 @@
-"use client"
-import { NoteCard } from '@/components/notes/note-card'
-import { ModeToggle } from "@/components/mode-toggle"
-import { NotesList } from '@/components/notes/notes-list'
-import { SearchNotes } from '@/components/notes/search-notes'
-import { useNotesApi } from '@/hooks/use-notes-api'
-import { useAuthGuard } from '@/hooks/use-auth-guard'
-import { Button } from '@/components/ui/button'
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { ModeToggle } from "@/components/mode-toggle";
+import { NoteCard } from "@/components/notes/note-card";
+import { NotesList } from "@/components/notes/notes-list";
+import { SearchNotes } from "@/components/notes/search-notes";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Note } from '@/domain/entities/note'
-import { useState, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import type { Note } from "@/domain/entities/note";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { useNotesApi } from "@/hooks/use-notes-api";
 
-const TEMPLATES_NOTES_TITLE = "Talvez você se interesse..."
-const NOTES_TITLE = "Minhas Notas"
+const TEMPLATES_NOTES_TITLE = "Talvez você se interesse...";
+const NOTES_TITLE = "Minhas Notas";
 
-export default function HomePage() {
+export function MainPage() {
   const { isAuthenticated, isChecking } = useAuthGuard();
-  const { notes, isLoading, error, deleteNote, updateNote, loadNotes } = useNotesApi();
-  const router = useRouter();
+  const { notes, isLoading, error, deleteNote, updateNote, loadNotes } =
+    useNotesApi();
 
   const [displayedNotes, setDisplayedNotes] = useState<Note[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [noteToDelete, setNoteToDelete] = useState<Note | null>(null)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  
-  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editedTitle, setEditedTitle] = useState('')
-  const [editedContent, setEditedContent] = useState('')
+  const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
     if (notes.length > 0) {
@@ -60,15 +58,14 @@ export default function HomePage() {
     if (noteToDelete) {
       try {
         await deleteNote(noteToDelete.id);
-        setIsDeleteModalOpen(false)
-        setNoteToDelete(null)
-        // Recarregar notas após deletar
+        setIsDeleteModalOpen(false);
+        setNoteToDelete(null);
         await loadNotes();
       } catch (error) {
-        console.error('Erro ao deletar nota:', error);
+        console.error("Erro ao deletar nota:", error);
       }
     }
-  }, [noteToDelete, deleteNote, loadNotes])
+  }, [noteToDelete, deleteNote, loadNotes]);
 
   const handleSaveEdit = useCallback(async () => {
     if (noteToEdit) {
@@ -77,17 +74,15 @@ export default function HomePage() {
           title: editedTitle,
           content: editedContent,
         });
-        setIsEditModalOpen(false)
-        setNoteToEdit(null)
-        // Recarregar notas após editar
+        setIsEditModalOpen(false);
+        setNoteToEdit(null);
         await loadNotes();
       } catch (error) {
-        console.error('Erro ao atualizar nota:', error);
+        console.error("Erro ao atualizar nota:", error);
       }
     }
-  }, [noteToEdit, editedTitle, editedContent, updateNote, loadNotes])
+  }, [noteToEdit, editedTitle, editedContent, updateNote, loadNotes]);
 
-  // Aguardar verificação de autenticação
   if (isChecking) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -119,7 +114,7 @@ export default function HomePage() {
   return (
     <div className="flex h-full">
       <ModeToggle className="absolute top-4 right-4 z-10" />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto">
           <section className="py-8 px-4 max-w-6xl mx-auto">
@@ -128,47 +123,52 @@ export default function HomePage() {
                 {isSearching ? "Resultados da Busca" : TEMPLATES_NOTES_TITLE}
               </h2>
               <p className="text-gray-500 dark:text-gray-400 mt-2">
-                {displayedNotes.length} {displayedNotes.length === 1 ? 'nota encontrada' : 'notas encontradas'}
+                {displayedNotes.length}{" "}
+                {displayedNotes.length === 1
+                  ? "nota encontrada"
+                  : "notas encontradas"}
               </p>
             </div>
 
-            {/* Componente de busca */}
-            <SearchNotes 
+            <SearchNotes
               onSearchResults={handleSearchResults}
               onClearSearch={handleClearSearch}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
               {displayedNotes.slice(0, 6).map((note) => (
                 <NoteCard
                   key={note.id}
-                  id={note.id || ''}
-                  title={note.title || 'Sem título'}
-                  content={note.content || ''}
-                  tags={note.tags?.map(tag => tag.name) || []}
+                  id={note.id || ""}
+                  title={note.title || "Sem título"}
+                  content={note.content || ""}
+                  tags={note.tags?.map((tag) => tag.name) || []}
                   links={[]}
-                  lastEdited={note.modifiedAt ? new Date(note.modifiedAt).toISOString() : undefined}
+                  lastEdited={
+                    note.modifiedAt
+                      ? new Date(note.modifiedAt).toISOString()
+                      : undefined
+                  }
                   onEdit={() => {
-                    setNoteToEdit(note)
-                    setEditedTitle(note.title || '')
-                    setEditedContent(note.content || '')
-                    setIsEditModalOpen(true)
+                    setNoteToEdit(note);
+                    setEditedTitle(note.title || "");
+                    setEditedContent(note.content || "");
+                    setIsEditModalOpen(true);
                   }}
                   onDelete={() => {
-                    setNoteToDelete(note)
-                    setIsDeleteModalOpen(true)
+                    setNoteToDelete(note);
+                    setIsDeleteModalOpen(true);
                   }}
                 />
               ))}
             </div>
           </section>
-          
+
           <NotesSection />
         </main>
       </div>
 
-      {/* Modais */}
-      <DeleteModal 
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onOpenChange={setIsDeleteModalOpen}
         noteToDelete={noteToDelete}
@@ -185,15 +185,19 @@ export default function HomePage() {
         onSave={handleSaveEdit}
       />
     </div>
-  )
+  );
 }
 
-// Componentes de modal separados para melhor organização
-function DeleteModal({ isOpen, onOpenChange, noteToDelete, onConfirm }: {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  noteToDelete: Note | null
-  onConfirm: () => void
+function DeleteModal({
+  isOpen,
+  onOpenChange,
+  noteToDelete,
+  onConfirm,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  noteToDelete: Note | null;
+  onConfirm: () => void;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -204,39 +208,47 @@ function DeleteModal({ isOpen, onOpenChange, noteToDelete, onConfirm }: {
           </DialogTitle>
           <DialogDescription className="pt-4 text-center text-gray-600 dark:text-gray-300">
             Você está prestes a excluir a nota <br />
-            <span className="font-semibold text-gray-800 dark:text-gray-100">"{noteToDelete?.title}"</span>.
-            <br /><br />
+            <span className="font-semibold text-gray-800 dark:text-gray-100">
+              "{noteToDelete?.title}"
+            </span>
+            .
+            <br />
+            <br />
             Esta ação não pode ser desfeita.
           </DialogDescription>
         </DialogHeader>
-        
+
         <DialogFooter className="flex justify-center gap-4 pt-4">
           <DialogClose asChild>
             <Button variant="outline" className="px-6">
               Cancelar
             </Button>
           </DialogClose>
-          <Button 
-            variant="destructive"
-            onClick={onConfirm}
-            className="px-6"
-          >
+          <Button variant="destructive" onClick={onConfirm} className="px-6">
             Confirmar
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
-function EditModal({ isOpen, onOpenChange, editedTitle, setEditedTitle, editedContent, setEditedContent, onSave }: {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  editedTitle: string
-  setEditedTitle: (title: string) => void
-  editedContent: string
-  setEditedContent: (content: string) => void
-  onSave: () => void
+function EditModal({
+  isOpen,
+  onOpenChange,
+  editedTitle,
+  setEditedTitle,
+  editedContent,
+  setEditedContent,
+  onSave,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  editedTitle: string;
+  setEditedTitle: (title: string) => void;
+  editedContent: string;
+  setEditedContent: (content: string) => void;
+  onSave: () => void;
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -246,10 +258,13 @@ function EditModal({ isOpen, onOpenChange, editedTitle, setEditedTitle, editedCo
             Editar Nota
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Título
             </label>
             <Input
@@ -259,9 +274,12 @@ function EditModal({ isOpen, onOpenChange, editedTitle, setEditedTitle, editedCo
               className="w-full"
             />
           </div>
-          
+
           <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="content"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Conteúdo
             </label>
             <Textarea
@@ -272,23 +290,20 @@ function EditModal({ isOpen, onOpenChange, editedTitle, setEditedTitle, editedCo
             />
           </div>
         </div>
-        
+
         <DialogFooter className="flex justify-center gap-4 pt-4">
           <DialogClose asChild>
             <Button variant="outline" className="px-6">
               Cancelar
             </Button>
           </DialogClose>
-          <Button 
-            onClick={onSave}
-            className="px-6"
-          >
+          <Button onClick={onSave} className="px-6">
             Salvar Alterações
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function NotesSection() {
@@ -299,5 +314,5 @@ function NotesSection() {
       </div>
       <NotesList />
     </section>
-  )
+  );
 }

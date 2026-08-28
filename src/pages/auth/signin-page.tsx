@@ -1,19 +1,17 @@
-"use client";
-
-import {FlickeringParticles} from "@/components/animations/flickering-particles";
-import {ModeToggle} from "@/components/mode-toggle";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { FlickeringParticles } from "@/components/animations/flickering-particles";
+import { SigninForm } from "@/components/auth/signin-form";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {SigninForm} from "@/components/auth/signin-form";
 import { useBackendHealth } from "@/hooks/use-backend-health";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertTriangle } from "lucide-react";
 
-export default function Page() {
+export function SigninPage() {
   const { isHealthy, isChecking, error } = useBackendHealth();
 
   return (
@@ -25,7 +23,6 @@ export default function Page() {
             Insira seu email e senha, ou acesse sua conta Google.
           </CardDescription>
         </CardHeader>
-        {/* Verificação de saúde do backend */}
         {isChecking && (
           <Alert>
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -39,20 +36,17 @@ export default function Page() {
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              Não foi possível conectar com o servidor. Verifique se o backend está rodando em http://localhost:8080
-              {error && (
-                <div className="mt-2 text-sm">
-                  Erro: {error}
-                </div>
-              )}
+              Não foi possível conectar com o servidor. Verifique se o
+              backend está rodando em http://localhost:8080
+              {error && <div className="mt-2 text-sm">Erro: {error}</div>}
             </AlertDescription>
           </Alert>
         )}
 
-        {isHealthy && <SigninForm/>}
+        {isHealthy && <SigninForm />}
       </Card>
-      <ModeToggle className="absolute top-4 right-4"/>
-      <FlickeringParticles className="absolute inset-0 invert dark:invert-0 dark:opacity-10 opacity-20"/>
+      <ModeToggle className="absolute top-4 right-4" />
+      <FlickeringParticles className="absolute inset-0 invert dark:invert-0 dark:opacity-10 opacity-20" />
     </div>
   );
 }

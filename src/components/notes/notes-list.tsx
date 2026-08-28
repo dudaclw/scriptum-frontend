@@ -6,12 +6,12 @@ import { EmptyState } from './empty-state';
 import { sortNotes } from '@/lib/note-utils';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 
 export const NotesList = () => {
   const { isAuthenticated, isChecking } = useAuthGuard();
   const { notes, isLoading, error, deleteNote, updateNote } = useNotesApi();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleDeleteNote = async (id: string) => {
     if (confirm('Tem certeza que deseja excluir esta nota?')) {
@@ -81,7 +81,7 @@ export const NotesList = () => {
           links={[]}
           color={note.color || '#ffffff'}
           lastEdited={note.modifiedAt ? new Date(note.modifiedAt).toISOString() : undefined}
-          onEdit={() => router.push(`/notes/${note.id}/edit`)}
+          onEdit={() => navigate(`/notes/${note.id}/edit`)}
           onDelete={() => handleDeleteNote(note.id)}
         />
       ))}

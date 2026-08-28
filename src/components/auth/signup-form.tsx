@@ -19,15 +19,13 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "sonner";
 import {useState} from "react";
 import {CardContent, CardFooter} from "../ui/card";
-import Link from "next/link";
-import {useRouter} from "next/navigation";
-import {apiService} from "@/domain/service/api";
+import {Link, useNavigate} from "react-router-dom";
 import {useAuthStore} from "@/lib/store/use-auth-store";
 
 export const SignupForm = () => {
   const register = useAuthStore((state) => state.register);
   const isLoading = useAuthStore((state) => state.isLoading);
-  const router = useRouter();
+  const navigate = useNavigate();
   const form = useForm<UserFormValuesWithPassword>({
     resolver: zodResolver(userSchemaWithPassword),
     defaultValues: {
@@ -49,7 +47,7 @@ export const SignupForm = () => {
         });
 
         toast.success("Conta criada com sucesso!");
-        router.push("/mainpage");
+        navigate("/mainpage");
 
       } catch (error) {
         console.error("Registration error:", error);
@@ -139,7 +137,7 @@ export const SignupForm = () => {
             <div className="flex justify-center">
               <div className="mt-4 flex items-center gap-0 text-sm">
                 Já possui conta?
-                <Link href={"/auth/signin"}>
+                <Link to="/auth/signin">
                   <Button type="button" variant={"link"} className="pl-1">
                     Faça Login
                   </Button>

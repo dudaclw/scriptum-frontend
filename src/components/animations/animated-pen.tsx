@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import Image from "next/image";
 
 export const AnimatedPen = () => {
   const rawX = useMotionValue(0);
@@ -32,12 +31,11 @@ export const AnimatedPen = () => {
       className="fixed inset-0 flex items-center justify-center pointer-events-none"
       style={{ x, y, rotate }}
     >
-      <Image
+      <img
         src="/pen_asset.png"
         alt="Caneta clássica preta com ponta prateada"
         width={500}
         height={500}
-        priority
         className="rotate-180 z-10 scale-150 select-none absolute drop-shadow-2xl drop-shadow-black/50 dark:drop-shadow-black -bottom-1/3"
       />
     </motion.div>

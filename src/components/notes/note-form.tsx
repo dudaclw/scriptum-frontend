@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MarkdownPreview } from "@/components/ui/markdown-preview";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { TagsInput } from "@/components/notes/tags-input";
 import { ColorPicker } from "@/components/notes/color-picker";
 import { useNotesApi } from "@/hooks/use-notes-api";
@@ -49,7 +49,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
   const [charCount, setCharCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackType | null>(null);
-  const router = useRouter();
+  const navigate = useNavigate();
   const { createNote, updateNote, getNoteById } = useNotesApi();
   const { user } = useAuthStore();
 
@@ -148,7 +148,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
           message: "Nota criada com sucesso!",
           type: 'success'
         });
-        onSuccess?.() || router.push(`/notes/${newNote.id}`);
+        onSuccess?.() || navigate(`/notes/${newNote.id}`);
       }
     } catch (error) {
       console.error("Failed to save note:", error);
@@ -159,7 +159,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [initialData?.id, onSuccess, router, createNote, updateNote, user]);
+  }, [initialData?.id, onSuccess, navigate, createNote, updateNote, user]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (!(e.ctrlKey || e.metaKey)) return;

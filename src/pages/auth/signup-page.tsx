@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function Page() {
+export function SignupPage() {
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen">
       <Card className="z-10 min-w-sm">

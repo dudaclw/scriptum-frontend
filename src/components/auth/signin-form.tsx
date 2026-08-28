@@ -19,13 +19,12 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "sonner";
 import {useState} from "react";
 import {CardContent, CardFooter} from "../ui/card";
-import Link from "next/link";
-import {useRouter} from "next/navigation";
+import {Link, useNavigate} from "react-router-dom";
 import {useAuthStore} from "@/lib/store/use-auth-store";
 
 export const SigninForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
   const { login } = useAuthStore();
 
   const form = useForm<LoginFormValues>({
@@ -50,8 +49,7 @@ export const SigninForm = () => {
       });
       
       toast.success("Login realizado com sucesso!");
-      router.push("/mainpage");
-      router.refresh();
+      navigate("/mainpage");
     } catch (error: any) {
       console.error("Erro no login:", error);
       
@@ -122,7 +120,7 @@ export const SigninForm = () => {
           <div className="flex justify-center">
             <div className="mt-4 flex items-center gap-0 text-sm">
               Novo por aqui?
-              <Link href={"/auth/signup"}>
+              <Link to="/auth/signup">
                 <Button type="button" variant={"link"} className="pl-1">Registre-se</Button>
               </Link>
             </div>

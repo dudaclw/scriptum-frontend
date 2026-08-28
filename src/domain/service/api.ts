@@ -2,6 +2,7 @@ import axios from "axios";
 import {Note} from "@/domain/entities/note";
 import {User} from "@/domain/entities/user";
 import {Tag} from "@/domain/entities/tag";
+import {useAuthStore} from "@/lib/store/use-auth-store";
 
 const api = axios.create({
   baseURL: 'http://localhost:8080/api',
@@ -9,29 +10,9 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    try {
-      const { useAuthStore } = require('@/lib/store/use-auth-store');
-      const token = useAuthStore.getState().token;
-      
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-        return config;
-      }
-    } catch (error) {
-      console.log('Zustand store não disponível, tentando localStorage');
-    }
-
-    // Fallback para localStorage (compatibilidade)
-    const authStorage = localStorage.getItem('auth-storage');
-    if (authStorage) {
-      try {
-        const {state} = JSON.parse(authStorage);
-        if (state?.token) {
-          config.headers.Authorization = `Bearer ${state.token}`;
-        }
-      } catch (error) {
-        console.error('Error parsing auth token:', error);
-      }
+    const token = useAuthStore.getState().token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -47,21 +28,8 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401) {
       console.log('Erro 401 - Limpando autenticação');
-      
-      // Limpar Zustand store
-      try {
-        const { useAuthStore } = require('@/lib/store/use-auth-store');
-        useAuthStore.getState().clearAuth();
-      } catch (error) {
-        console.log('Erro ao limpar Zustand store:', error);
-      }
-      
-      // Limpar localStorage também
-      localStorage.removeItem('auth-storage');
-      
-      if (typeof window !== 'undefined') {
-        window.location.href = '/auth/signin';
-      }
+      useAuthStore.getState().clearAuth();
+      window.location.href = '/auth/signin';
     }
 
     return Promise.reject(error);

@@ -6,7 +6,7 @@ import { FlickeringParticles } from "../animations/flickering-particles";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../mode-toggle";
 import { AnimatedText } from "../animations/animated-text";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 export const HeroSection = () => {
   const authors = [
@@ -36,7 +36,7 @@ export const HeroSection = () => {
         </p>
 
         <div className="mt-4 flex items-center gap-2">
-          <Link href={"/auth/signin"}>
+          <Link to="/auth/signin">
             <Button type="button">Entrar no Scriptum</Button>
           </Link>
 

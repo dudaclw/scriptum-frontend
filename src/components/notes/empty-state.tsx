@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { ClipboardList, FilePlus2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EmptyStateProps } from '@/domain/types/types';
@@ -35,7 +35,7 @@ export function EmptyState({
       
       {actionText && actionHref && (
         <Button asChild className="mt-4">
-          <Link href={actionHref} className="gap-2">
+          <Link to={actionHref} className="gap-2">
             <FilePlus2 className="h-4 w-4" />
             {actionText}
           </Link>
