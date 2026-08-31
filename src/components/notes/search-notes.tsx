@@ -62,7 +62,8 @@ export function SearchNotes({ onSearchResults, onClearSearch }: SearchNotesProps
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           type="text"
-          placeholder="Buscar notas por título ou conteúdo..."
+          placeholder="Buscar notas..."
+          aria-label="Buscar notas por título ou conteúdo"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyPress={handleKeyPress}

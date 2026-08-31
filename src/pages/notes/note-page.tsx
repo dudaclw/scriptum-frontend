@@ -89,7 +89,7 @@ export function NotePage() {
             className={`text-3xl font-bold mb-4 ${
               getContrastTextColor(note.color || "#ffffff") === "light"
                 ? "text-white"
-                : "text-foreground"
+                : "text-gray-800"
             }`}
           >
             {note.title}
@@ -99,7 +99,7 @@ export function NotePage() {
             className={`flex items-center gap-4 mb-6 text-sm ${
               getContrastTextColor(note.color || "#ffffff") === "light"
                 ? "text-gray-200"
-                : "text-muted-foreground"
+                : "text-gray-600"
             }`}
           >
             <div>Criado em: {formatDate(note.createdAt)}</div>
@@ -120,8 +120,8 @@ export function NotePage() {
           <div
             className={`prose max-w-none ${
               getContrastTextColor(note.color || "#ffffff") === "light"
-                ? "prose-invert"
-                : ""
+                ? "prose-invert text-white"
+                : "text-gray-800"
             }`}
           >
             <MarkdownPreview content={note.content} />

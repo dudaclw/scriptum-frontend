@@ -1,6 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useCallback, useState } from "react";
 import { NoteCard } from "@/components/notes/note-card";
 import { NotesList } from "@/components/notes/notes-list";
 import { SearchNotes } from "@/components/notes/search-notes";
@@ -20,7 +19,6 @@ import type { Note } from "@/domain/entities/note";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useNotesApi } from "@/hooks/use-notes-api";
 
-const TEMPLATES_NOTES_TITLE = "Talvez você se interesse...";
 const NOTES_TITLE = "Minhas Notas";
 
 export function MainPage() {
@@ -38,21 +36,15 @@ export function MainPage() {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
 
-  useEffect(() => {
-    if (notes.length > 0) {
-      setDisplayedNotes(notes);
-    }
-  }, [notes]);
-
   const handleSearchResults = useCallback((searchResults: Note[]) => {
     setDisplayedNotes(searchResults);
     setIsSearching(true);
   }, []);
 
   const handleClearSearch = useCallback(() => {
-    setDisplayedNotes(notes);
+    setDisplayedNotes([]);
     setIsSearching(false);
-  }, [notes]);
+  }, []);
 
   const handleDeleteNote = useCallback(async () => {
     if (noteToDelete) {
@@ -113,55 +105,57 @@ export function MainPage() {
 
   return (
     <div className="flex h-full">
-      <ModeToggle className="absolute top-4 right-4 z-10" />
-
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto">
           <section className="py-8 px-4 max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                {isSearching ? "Resultados da Busca" : TEMPLATES_NOTES_TITLE}
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-2">
-                {displayedNotes.length}{" "}
-                {displayedNotes.length === 1
-                  ? "nota encontrada"
-                  : "notas encontradas"}
-              </p>
-            </div>
-
             <SearchNotes
               onSearchResults={handleSearchResults}
               onClearSearch={handleClearSearch}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
-              {displayedNotes.slice(0, 6).map((note) => (
-                <NoteCard
-                  key={note.id}
-                  id={note.id || ""}
-                  title={note.title || "Sem título"}
-                  content={note.content || ""}
-                  tags={note.tags?.map((tag) => tag.name) || []}
-                  links={[]}
-                  lastEdited={
-                    note.modifiedAt
-                      ? new Date(note.modifiedAt).toISOString()
-                      : undefined
-                  }
-                  onEdit={() => {
-                    setNoteToEdit(note);
-                    setEditedTitle(note.title || "");
-                    setEditedContent(note.content || "");
-                    setIsEditModalOpen(true);
-                  }}
-                  onDelete={() => {
-                    setNoteToDelete(note);
-                    setIsDeleteModalOpen(true);
-                  }}
-                />
-              ))}
-            </div>
+            {isSearching && (
+              <div className="mt-8">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Resultados da Busca
+                  </h2>
+                  <p className="text-muted-foreground mt-2">
+                    {displayedNotes.length}{" "}
+                    {displayedNotes.length === 1
+                      ? "nota encontrada"
+                      : "notas encontradas"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
+                  {displayedNotes.map((note) => (
+                    <NoteCard
+                      key={note.id}
+                      id={note.id || ""}
+                      title={note.title || "Sem título"}
+                      content={note.content || ""}
+                      tags={note.tags?.map((tag) => tag.name) || []}
+                      links={[]}
+                      lastEdited={
+                        note.modifiedAt
+                          ? new Date(note.modifiedAt).toISOString()
+                          : undefined
+                      }
+                      onEdit={() => {
+                        setNoteToEdit(note);
+                        setEditedTitle(note.title || "");
+                        setEditedContent(note.content || "");
+                        setIsEditModalOpen(true);
+                      }}
+                      onDelete={() => {
+                        setNoteToDelete(note);
+                        setIsDeleteModalOpen(true);
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
 
           <NotesSection />
@@ -203,12 +197,12 @@ function DeleteModal({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center text-gray-800 dark:text-gray-100">
+          <DialogTitle className="text-xl font-bold text-center text-foreground">
             Confirmar exclusão
           </DialogTitle>
-          <DialogDescription className="pt-4 text-center text-gray-600 dark:text-gray-300">
+          <DialogDescription className="pt-4 text-center text-muted-foreground">
             Você está prestes a excluir a nota <br />
-            <span className="font-semibold text-gray-800 dark:text-gray-100">
+            <span className="font-semibold text-foreground">
               "{noteToDelete?.title}"
             </span>
             .
@@ -254,7 +248,7 @@ function EditModal({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center text-gray-800 dark:text-gray-100">
+          <DialogTitle className="text-xl font-bold text-center text-foreground">
             Editar Nota
           </DialogTitle>
         </DialogHeader>
@@ -263,7 +257,7 @@ function EditModal({
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-muted-foreground mb-1"
             >
               Título
             </label>
@@ -278,7 +272,7 @@ function EditModal({
           <div>
             <label
               htmlFor="content"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              className="block text-sm font-medium text-muted-foreground mb-1"
             >
               Conteúdo
             </label>

@@ -32,30 +32,30 @@ export function NoteCard({
 
   return (
     <div className={`relative w-full max-w-md group ${className}`}>
-      <div 
-        className="rounded-lg border border-gray-200 dark:border-gray-700 p-6 h-full shadow-md hover:shadow-lg transition-shadow"
+      <div
+        className="rounded-lg border border-border p-6 h-full shadow-md hover:shadow-lg transition-shadow"
         style={{ backgroundColor: color }}
       >
         <h3 className={`text-lg font-semibold mb-2 ${
-          isLightText ? 'text-white' : 'text-gray-800 dark:text-gray-100'
+          isLightText ? 'text-white' : 'text-gray-800'
         }`}>
           {title}
         </h3>
         <p className={`text-sm mb-4 line-clamp-3 ${
-          isLightText ? 'text-gray-200' : 'text-gray-600 dark:text-gray-300'
+          isLightText ? 'text-gray-200' : 'text-gray-600'
         }`}>
           {content}
         </p>
-        
+
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {tags.map(tag => (
-              <span 
+              <span
                 key={`${id}-${tag}`}
                 className={`px-2 py-1 text-xs rounded-full ${
-                  isLightText 
-                    ? 'bg-white/20 text-white' 
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                  isLightText
+                    ? 'bg-white/20 text-white'
+                    : 'bg-black/5 text-gray-600'
                 }`}
               >
                 {tag}
@@ -63,10 +63,10 @@ export function NoteCard({
             ))}
           </div>
         )}
-        
+
         {lastEdited && (
           <p className={`text-xs mt-4 ${
-            isLightText ? 'text-gray-300' : 'text-gray-500 dark:text-gray-400'
+            isLightText ? 'text-gray-300' : 'text-gray-500'
           }`}>
             Editado em: {new Date(lastEdited).toLocaleDateString()}
           </p>

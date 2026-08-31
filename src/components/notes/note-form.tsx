@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MarkdownPreview } from "@/components/ui/markdown-preview";
@@ -204,10 +204,9 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="w-full flex flex-col p-4">
-        <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 flex flex-col">
+      <div className="max-w-4xl mx-auto px-8 py-4 flex-1 flex flex-col">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 flex flex-col">
               {/* Feedback Message */}
               {feedback && (
                 <div className={`mb-4 p-3 rounded-md text-center ${
@@ -314,18 +313,19 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
                   </div>
                 </div>
 
-                <TabsContent value="write" className="flex-1 min-h-[400px]">
+                <TabsContent value="write" className="flex-1">
                   <FormField
                     control={form.control}
                     name="content"
                     render={({ field }) => (
-                      <FormItem className="h-full">
+                      <FormItem>
                         <FormControl>
-                          <Textarea
+                          <TextareaAutosize
                             {...field}
                             onKeyDown={handleKeyDown}
+                            minRows={12}
                             placeholder="Comece a escrever aqui... Use Markdown para formatação."
-                            className="h-full w-full p-4 font-mono text-base resize-none border rounded-lg focus-visible:ring-1"
+                            className="w-full p-4 font-mono text-base rounded-lg border-0 bg-muted resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                           />
                         </FormControl>
                         <FormMessage />
@@ -337,9 +337,9 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
                 <TabsContent value="preview" className="flex-1 min-h-[400px]">
                   <div 
                     className={`h-full p-4 overflow-auto prose max-w-none border rounded-lg ${
-                      getContrastTextColor(color || '#ffffff') === 'light' 
-                        ? 'prose-invert' 
-                        : ''
+                      getContrastTextColor(color || '#ffffff') === 'light'
+                        ? 'prose-invert text-white'
+                        : 'text-gray-800'
                     }`}
                     style={{ backgroundColor: color }}
                   >
@@ -351,22 +351,19 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
               </Tabs>
 
               {/* Footer */}
-              <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => form.setValue("content", `${content}\n# `)}
-                    className="hover:text-foreground"
-                    title="Cabeçalho 1 (Ctrl+1)"
-                  >
-                    H1
-                  </button>
-                </div>
-                <div>Markdown</div>
+              <div className="mt-4 flex items-center justify-between rounded-lg border bg-muted px-3 py-1.5 text-xs text-muted-foreground">
+                <button
+                  type="button"
+                  onClick={() => form.setValue("content", `${content}\n# `)}
+                  className="rounded px-2 py-1 hover:bg-accent hover:text-accent-foreground focus-visible:outline-2"
+                  title="Cabeçalho 1 (Ctrl+1)"
+                >
+                  H1
+                </button>
+                <span>Markdown</span>
               </div>
-            </form>
-          </Form>
-        </div>
+          </form>
+        </Form>
       </div>
     </div>
   );

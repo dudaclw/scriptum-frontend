@@ -3,7 +3,6 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'prism-react-renderer';
-import { cn } from '@/lib/utils';
 
 type MarkdownPreviewProps = {
   content: string;
@@ -12,7 +11,7 @@ type MarkdownPreviewProps = {
 
 export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
   return (
-    <div className={cn('prose dark:prose-invert max-w-none', className)}>
+    <div className={className}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
