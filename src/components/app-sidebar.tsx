@@ -1,6 +1,7 @@
-import { Home, Inbox, Menu, Settings } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Home, Inbox, LogOut, Menu, Settings } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useAuthStore } from "@/lib/store/use-auth-store";
 
 import {
 	Sidebar,
@@ -36,6 +37,13 @@ const items = [
 export function AppSidebar() {
 	const { toggleSidebar } = useSidebar();
 	const location = useLocation();
+	const navigate = useNavigate();
+	const logout = useAuthStore((state) => state.logout);
+
+	const handleLogout = () => {
+		logout();
+		navigate("/auth/signin");
+	};
 
 	return (
 		<Sidebar collapsible="icon">
@@ -77,6 +85,12 @@ export function AppSidebar() {
 			</SidebarContent>
 			<SidebarFooter>
 				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton onClick={handleLogout} tooltip="Sair">
+							<LogOut />
+							<span>Sair</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
 					<SidebarMenuItem>
 						<ModeToggle />
 					</SidebarMenuItem>

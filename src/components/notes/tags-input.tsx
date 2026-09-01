@@ -23,12 +23,17 @@ export function TagsInput({
     if (['Enter', 'Tab', ','].includes(e.key)) {
       e.preventDefault();
       const newTag = input.trim();
-      
+
+      if (selected.length >= 5) {
+        setError('Máximo de 5 tags por nota');
+        return;
+      }
+
       if (!isValidTag(newTag)) {
         setError('Tags devem ter até 20 caracteres alfanuméricos');
         return;
       }
-      
+
       if (!selected.includes(newTag)) {
         onChange([...selected, newTag]);
         setInput('');
