@@ -67,7 +67,7 @@ export function SearchNotes({ onSearchResults, onClearSearch }: SearchNotesProps
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="pl-10"
+          className="pl-10 focus-visible:border-accent-500 focus-visible:ring-accent-500/50"
         />
       </div>
       <Button

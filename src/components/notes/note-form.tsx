@@ -229,7 +229,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
                         <Input
                           {...field}
                           placeholder="Título da nota"
-                          className="text-2xl font-bold border-none shadow-none focus-visible:ring-0 px-0"
+                          className="text-2xl font-bold font-display border-none shadow-none focus-visible:ring-0 px-0"
                         />
                       </FormControl>
                       <FormMessage />

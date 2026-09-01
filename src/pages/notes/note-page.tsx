@@ -86,7 +86,7 @@ export function NotePage() {
           style={{ backgroundColor: note.color || "#ffffff" }}
         >
           <h1
-            className={`text-3xl font-bold mb-4 ${
+            className={`text-3xl font-bold font-display mb-4 ${
               getContrastTextColor(note.color || "#ffffff") === "light"
                 ? "text-white"
                 : "text-gray-800"

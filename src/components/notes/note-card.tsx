@@ -36,7 +36,7 @@ export function NoteCard({
         className="rounded-lg border border-border p-6 h-full shadow-md hover:shadow-lg transition-shadow"
         style={{ backgroundColor: color }}
       >
-        <h3 className={`text-lg font-semibold mb-2 ${
+        <h3 className={`text-lg font-semibold font-display mb-2 ${
           isLightText ? 'text-white' : 'text-gray-800'
         }`}>
           {title}

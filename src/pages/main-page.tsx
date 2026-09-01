@@ -304,7 +304,7 @@ function NotesSection() {
   return (
     <section className="container mx-auto py-8 px-4">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold">{NOTES_TITLE}</h1>
+        <h1 className="text-3xl font-bold font-display">{NOTES_TITLE}</h1>
       </div>
       <NotesList />
     </section>

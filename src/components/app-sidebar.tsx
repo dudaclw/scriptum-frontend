@@ -8,7 +8,6 @@ import {
 	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -45,30 +44,33 @@ export function AppSidebar() {
 					<SidebarMenuItem>
 						<SidebarMenuButton onClick={toggleSidebar} tooltip="Abrir/fechar menu">
 							<Menu />
-							<span>Menu</span>
+							<span className="font-semibold">Scriptum</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Scriptum</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
-							{items.map((item) => (
-								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton
-										asChild
-										isActive={location.pathname === item.url}
-										tooltip={item.title}
-									>
-										<Link to={item.url}>
-											<item.icon />
-											<span>{item.title}</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							))}
+							{items.map((item) => {
+								const isActive = location.pathname === item.url;
+								return (
+									<SidebarMenuItem key={item.title}>
+										<SidebarMenuButton
+											asChild
+											isActive={isActive}
+											tooltip={item.title}
+											className={isActive ? "border-l-2 border-accent-500" : ""}
+										>
+											<Link to={item.url}>
+												<item.icon />
+												<span>{item.title}</span>
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								);
+							})}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
