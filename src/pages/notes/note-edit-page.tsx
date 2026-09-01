@@ -22,7 +22,16 @@ export function NoteEditPage() {
 
   return (
     <NoteForm
-      initialData={note}
+      initialData={
+        note && {
+          id: note.id,
+          title: note.title,
+          content: note.content,
+          isPinned: note.isPinned,
+          color: note.color || "#FFFFFF",
+          tags: note.tags?.map((tag) => tag.name) || [],
+        }
+      }
       onSuccess={handleSuccess}
       onDelete={() => navigate("/")}
     />

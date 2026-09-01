@@ -110,7 +110,15 @@ export function NotePage() {
           {note.tags && note.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {note.tags.map((tag) => (
-                <Badge key={tag.id} variant="outline">
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  className={
+                    getContrastTextColor(note.color || "#ffffff") === "light"
+                      ? "border-white/30 bg-white/20 text-white"
+                      : "border-black/10 bg-black/5 text-gray-600"
+                  }
+                >
                   {tag.name}
                 </Badge>
               ))}
