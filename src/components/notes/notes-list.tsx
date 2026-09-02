@@ -67,7 +67,7 @@ export const NotesList = () => {
     return <EmptyState />;
   }
 
-  const responsiveGridClasses = 'grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 w-full';
+  const responsiveGridClasses = 'grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4 w-full';
 
   return (
     <div className={responsiveGridClasses}>
@@ -81,7 +81,7 @@ export const NotesList = () => {
           links={[]}
           color={note.color || '#ffffff'}
           lastEdited={note.modifiedAt ? new Date(note.modifiedAt).toISOString() : undefined}
-          onEdit={() => navigate(`/notes/${note.id}/edit`)}
+          onEdit={() => navigate(`/notes/${note.id}`)}
           onDelete={() => handleDeleteNote(note.id)}
         />
       ))}

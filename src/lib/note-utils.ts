@@ -22,6 +22,14 @@ export function formatBrazilianDate(input: Date | number | string): string {
   }).format(date);
 }
 
+export const MAX_TAGS_PER_NOTE = 5;
+
+export const isValidTagName = (tag: string): boolean => {
+  return tag.trim().length > 0 &&
+    tag.length <= 20 &&
+    /^[a-zA-Z0-9á-úÁ-Ú ]+$/.test(tag);
+};
+
 // sortNotes mais legível
 export const sortNotes = (notes: Array<Note>): Array<Note> => {
   return [...notes].sort((a, b) => {

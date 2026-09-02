@@ -2,34 +2,29 @@
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { isValidTagName, MAX_TAGS_PER_NOTE } from '@/lib/note-utils';
 
-export function TagsInput({ 
-  selected, 
-  onChange 
-}: { 
-  selected: string[]; 
-  onChange: (tags: string[]) => void 
+export function TagsInput({
+  selected,
+  onChange
+}: {
+  selected: string[];
+  onChange: (tags: string[]) => void
 }) {
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
-
-  const isValidTag = (tag: string) => {
-    return tag.trim().length > 0 && 
-           tag.length <= 20 && 
-           /^[a-zA-Z0-9á-úÁ-Ú ]+$/.test(tag);
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (['Enter', 'Tab', ','].includes(e.key)) {
       e.preventDefault();
       const newTag = input.trim();
 
-      if (selected.length >= 5) {
-        setError('Máximo de 5 tags por nota');
+      if (selected.length >= MAX_TAGS_PER_NOTE) {
+        setError(`Máximo de ${MAX_TAGS_PER_NOTE} tags por nota`);
         return;
       }
 
-      if (!isValidTag(newTag)) {
+      if (!isValidTagName(newTag)) {
         setError('Tags devem ter até 20 caracteres alfanuméricos');
         return;
       }

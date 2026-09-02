@@ -63,8 +63,8 @@ export function useNotesApi() {
     }
   }, [isAuthenticated, user]);
 
-  // Atualizar nota
-  const updateNote = useCallback(async (id: string, updates: Partial<Note>) => {
+  // Atualizar nota (silent: sem toast, para autosave)
+  const updateNote = useCallback(async (id: string, updates: Partial<Note>, options?: { silent?: boolean }) => {
     if (!isAuthenticated || !user) {
       throw new Error('Usuário não autenticado');
     }
@@ -75,18 +75,19 @@ export function useNotesApi() {
     try {
       const updatedNote = await apiService.updateNote(id, {
         ...updates,
+        userId: user.id,
         modifiedAt: new Date(),
       } as Note);
-      
-      setNotes(prev => prev.map(note => 
+
+      setNotes(prev => prev.map(note =>
         note.id === id ? updatedNote : note
       ));
-      toast.success('Nota atualizada com sucesso!');
+      if (!options?.silent) toast.success('Nota atualizada com sucesso!');
       return updatedNote;
     } catch (err: any) {
       console.error('Erro ao atualizar nota:', err);
       setError(err.response?.data?.message || 'Erro ao atualizar nota');
-      toast.error('Erro ao atualizar nota');
+      if (!options?.silent) toast.error('Erro ao atualizar nota');
       throw err;
     } finally {
       setIsLoading(false);
