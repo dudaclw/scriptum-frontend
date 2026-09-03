@@ -5,8 +5,12 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useNotesApi } from "@/hooks/use-notes-api";
 
-export function CommandPalette() {
-  const [open, setOpen] = useState(false);
+interface CommandPaletteProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const { notes } = useNotesApi();
   const navigate = useNavigate();
@@ -15,12 +19,12 @@ export function CommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((value) => !value);
+        onOpenChange(!open);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [open, onOpenChange]);
 
   useEffect(() => {
     if (!open) setQuery("");
@@ -33,12 +37,12 @@ export function CommandPalette() {
   }, [notes, query]);
 
   const handleSelect = (id: string) => {
-    setOpen(false);
+    onOpenChange(false);
     navigate(`/notes/${id}`);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg gap-0 overflow-hidden p-0 top-[20%] translate-y-0" showCloseButton={false}>
         <DialogTitle className="sr-only">Buscar notas</DialogTitle>
         <Input

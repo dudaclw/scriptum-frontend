@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AppTopbar } from "@/components/app-topbar";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { CommandPalette } from "@/components/command-palette";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
 const SIDEBAR_OPEN_KEY = "sidebar-open";
@@ -27,7 +28,7 @@ function RouteFade({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <div className={`h-full transition-opacity duration-150 ${visible ? "opacity-100" : "opacity-0"}`}>
+    <div className={`flex-1 min-h-0 transition-opacity duration-150 ${visible ? "opacity-100" : "opacity-0"}`}>
       {children}
     </div>
   );
@@ -36,6 +37,7 @@ function RouteFade({ children }: { children: React.ReactNode }) {
 export function SidebarLayout() {
   const [width, setWidth] = useState(readStoredWidth);
   const [open, setOpen] = useState(() => localStorage.getItem(SIDEBAR_OPEN_KEY) !== "false");
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const handleOpenChange = useCallback((value: boolean) => {
     setOpen(value);
@@ -56,17 +58,14 @@ export function SidebarLayout() {
     >
       <AppSidebar onResizeWidth={handleResizeWidth} />
       <SidebarInset className="overflow-x-hidden">
-        {/* No mobile a sidebar fica fechada por padrão (Sheet) e seu próprio
-            trigger fica inacessível enquanto fechada — este é o único gatilho
-            sempre alcançável fora dela. */}
-        <SidebarTrigger className="m-2 md:hidden" />
+        <AppTopbar onSearchClick={() => setPaletteOpen(true)} />
         <ProtectedRoute>
           <RouteFade>
             <Outlet />
           </RouteFade>
         </ProtectedRoute>
       </SidebarInset>
-      <CommandPalette />
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </SidebarProvider>
   );
 }

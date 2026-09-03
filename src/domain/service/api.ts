@@ -57,6 +57,21 @@ export interface AuthRequestBody {
   password: string;
 }
 
+export interface UserUpdatePayload {
+  name: string;
+  email: string;
+  password?: string;
+  avatarUrl?: string;
+}
+
+export interface UserProfileResponse {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  emailVerified: boolean;
+}
+
 export const apiService = {
   login: async (credentials: AuthRequestBody): Promise<AuthResponse> => {
     const response = await api.post('/auth/login', credentials);
@@ -95,7 +110,7 @@ export const apiService = {
     return response.data;
   },
 
-  updateUser: async (id: string, userData: User): Promise<User> => {
+  updateUser: async (id: string, userData: UserUpdatePayload): Promise<UserProfileResponse> => {
     const response = await api.put(`/users/${id}`, userData);
     return response.data;
   },

@@ -6,12 +6,29 @@ import {
   Pin,
   Plus,
   Trash2,
+  X,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +64,7 @@ export function NotePage() {
   const { isAuthenticated, isChecking } = useAuthGuard();
   const { noteId } = useParams<{ noteId: string }>();
   const { note, isLoading } = useNote(noteId ?? "");
-  const { updateNote, deleteNote, createNote } = useNotesApi();
+  const { notes, updateNote, deleteNote, createNote } = useNotesApi();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -58,6 +75,8 @@ export function NotePage() {
   const [tagInput, setTagInput] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving">("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [linkTag, setLinkTag] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   const hydratedRef = useRef(false);
@@ -189,14 +208,23 @@ export function NotePage() {
     }
   };
 
-  const handleDelete = async () => {
+  const relatedNotes = useMemo(
+    () =>
+      linkTag
+        ? notes.filter((n) => n.id !== noteId && n.tags?.some((t) => t.name === linkTag))
+        : [],
+    [linkTag, notes, noteId],
+  );
+
+  const handleConfirmDelete = async () => {
     if (!noteId) return;
-    if (!confirm("Tem certeza que deseja excluir esta nota?")) return;
     try {
       await deleteNote(noteId);
       navigate("/mainpage");
     } catch (error) {
       console.error("Falha ao excluir nota:", error);
+    } finally {
+      setIsDeleteDialogOpen(false);
     }
   };
 
@@ -279,7 +307,10 @@ export function NotePage() {
                 <Copy className="h-4 w-4" />
                 Duplicar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDelete} className="focus:bg-accent-500 focus:text-white">
+              <DropdownMenuItem
+                onClick={() => setIsDeleteDialogOpen(true)}
+                className="focus:bg-accent-500 focus:text-white"
+              >
                 <Trash2 className="h-4 w-4" />
                 Excluir
               </DropdownMenuItem>
@@ -306,15 +337,27 @@ export function NotePage() {
 
         <div className="flex flex-wrap items-center gap-2 mb-1">
           {tags.map((tag) => (
-            <button
+            <span
               key={tag}
-              type="button"
-              onClick={() => handleRemoveTag(tag)}
-              title="Clique para remover"
-              className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground hover:bg-muted/70 transition-colors"
+              className="group flex items-center gap-1 rounded-full bg-muted pl-2 pr-1 py-1 text-xs text-muted-foreground hover:bg-muted/70 transition-colors"
             >
-              {tag}
-            </button>
+              <button
+                type="button"
+                onClick={() => setLinkTag(tag)}
+                title="Ver notas com esta tag"
+              >
+                {tag}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRemoveTag(tag)}
+                aria-label={`Remover tag ${tag}`}
+                title="Remover tag"
+                className="rounded-full p-0.5 opacity-0 group-hover:opacity-100 hover:bg-background hover:text-destructive transition-opacity"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
           ))}
           {isAddingTag ? (
             <input
@@ -377,6 +420,55 @@ export function NotePage() {
               : ""}
         </span>
       </div>
+
+      <Dialog open={!!linkTag} onOpenChange={(open) => !open && setLinkTag(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Notas com a tag "{linkTag}"</DialogTitle>
+          </DialogHeader>
+          {relatedNotes.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma outra nota usa esta tag ainda.
+            </p>
+          ) : (
+            <div className="flex max-h-80 flex-col gap-1 overflow-y-auto">
+              {relatedNotes.map((n) => (
+                <button
+                  key={n.id}
+                  type="button"
+                  onClick={() => {
+                    setLinkTag(null);
+                    navigate(`/notes/${n.id}`);
+                  }}
+                  className="rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
+                >
+                  {n.title || "Sem título"}
+                </button>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir nota</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta nota? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-danger-500 text-white hover:bg-danger-500/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -31,7 +31,6 @@ export const SignupForm = () => {
     defaultValues: {
       email: "",
       name: "",
-      avatarUrl: "",
       password: "",
     },
     mode: "onTouched",
@@ -43,7 +42,6 @@ export const SignupForm = () => {
           name: values.name,
           email: values.email,
           password: values.password,
-          avatarUrl: values.avatarUrl
         });
 
         toast.success("Conta criada com sucesso!");
@@ -90,24 +88,6 @@ export const SignupForm = () => {
                       autoComplete="email"
                       placeholder="nome@exemplo.com"
                       {...field}
-                    />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="avatarUrl"
-              render={({field}) => (
-                <FormItem className="mt-4">
-                  <FormLabel>URL do avatar (opcional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://..."
-                      {...field}
-                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage/>

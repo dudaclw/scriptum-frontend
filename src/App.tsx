@@ -9,6 +9,7 @@ import { SignupPage } from "@/pages/auth/signup-page";
 import { MainPage } from "@/pages/main-page";
 import { NewNotePage } from "@/pages/notes/new-note-page";
 import { NotePage } from "@/pages/notes/note-page";
+import { SettingsPage } from "@/pages/settings-page";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
               <Route path="/mainpage" element={<MainPage />} />
               <Route path="/notes/new" element={<NewNotePage />} />
               <Route path="/notes/:noteId" element={<NotePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -29,7 +29,7 @@ const items = [
 	},
 	{
 		title: "Settings",
-		url: "#",
+		url: "/settings",
 		icon: Settings,
 	},
 ];
@@ -76,7 +76,7 @@ export function AppSidebar({ onResizeWidth }: { onResizeWidth: (clientX: number)
 					<SidebarMenuItem>
 						<SidebarMenuButton onClick={toggleSidebar} tooltip="Abrir/fechar menu">
 							<Menu />
-							<span className="font-semibold">Scriptum</span>
+							<span className="font-styled text-xl">Scriptum</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
