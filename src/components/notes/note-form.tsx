@@ -36,6 +36,15 @@ type FeedbackType = {
   type: 'success' | 'error';
 };
 
+const MARKDOWN_SHORTCUTS = [
+  { label: "H1", prefix: "#", title: "Cabeçalho 1 (Ctrl+1)" },
+  { label: "H2", prefix: "##", title: "Cabeçalho 2" },
+  { label: "H3", prefix: "###", title: "Cabeçalho 3" },
+  { label: "•", prefix: "-", title: "Lista" },
+  { label: "1.", prefix: "1.", title: "Lista numerada" },
+  { label: "❯", prefix: ">", title: "Citação" },
+];
+
 const DEFAULT_NOTE_VALUES: NoteFormValues = {
   title: "",
   content: "",
@@ -352,14 +361,19 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
 
               {/* Footer */}
               <div className="mt-4 flex items-center justify-between rounded-lg border bg-muted px-3 py-1.5 text-xs text-muted-foreground">
-                <button
-                  type="button"
-                  onClick={() => form.setValue("content", `${content}\n# `)}
-                  className="rounded px-2 py-1 hover:bg-accent hover:text-accent-foreground focus-visible:outline-2"
-                  title="Cabeçalho 1 (Ctrl+1)"
-                >
-                  H1
-                </button>
+                <div className="flex items-center gap-1">
+                  {MARKDOWN_SHORTCUTS.map(({ label, prefix, title }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => form.setValue("content", `${content}\n${prefix} `)}
+                      className="rounded px-2 py-1 hover:bg-accent hover:text-accent-foreground focus-visible:outline-2"
+                      title={title}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
                 <span>Markdown</span>
               </div>
           </form>
