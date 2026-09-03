@@ -34,7 +34,7 @@ cd scriptum-frontend
 bun install            # or npm/yarn
 
 # 3. Configure the backend URL
-#    The API base URL is currently hardcoded in src/domain/service/api.ts
+#    The API base URL is currently in src/domain/service/api.ts
 #    (http://localhost:8080/api). Update it there, or wire up an
 #    environment variable, to point at your backend instance.
 
