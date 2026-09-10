@@ -6,6 +6,9 @@ import {useAuthStore} from "@/lib/store/use-auth-store";
 
 const api = axios.create({
   baseURL: 'https://b2f5-177-53-200-108.ngrok-free.app/api',
+  headers: {
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 api.interceptors.request.use(
