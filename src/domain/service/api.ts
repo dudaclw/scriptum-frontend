@@ -5,7 +5,7 @@ import {Tag} from "@/domain/entities/tag";
 import {useAuthStore} from "@/lib/store/use-auth-store";
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://b2f5-177-53-200-108.ngrok-free.app/api',
 });
 
 api.interceptors.request.use(
