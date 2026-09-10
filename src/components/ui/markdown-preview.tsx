@@ -1,8 +1,6 @@
-'use client';
-
+import { Highlight, themes } from 'prism-react-renderer';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'prism-react-renderer';
 
 type MarkdownPreviewProps = {
   content: string;
@@ -15,20 +13,46 @@ export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || '');
-            return !inline && match ? (
-              <SyntaxHighlighter
-                language={match[1]}
-                PreTag="div"
-                {...props}
+          // O react-markdown v10 não passa mais a flag `inline`: um bloco de
+          // código cercado chega com a classe `language-*`, o code inline não.
+          code({ className, children, ...props }) {
+            const language = /language-(\w+)/.exec(className || '')?.[1];
+
+            if (!language) {
+              return (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            }
+
+            return (
+              <Highlight
+                code={String(children).replace(/\n$/, '')}
+                language={language}
+                theme={themes.vsDark}
               >
-                {String(children).replace(/\n$/, '')}
-              </SyntaxHighlighter>
-            ) : (
-              <code className={className} {...props}>
-                {children}
-              </code>
+                {({
+                  className: preClassName,
+                  style,
+                  tokens,
+                  getLineProps,
+                  getTokenProps,
+                }) => (
+                  <pre
+                    className={`${preClassName} rounded-md p-4 overflow-x-auto mb-4`}
+                    style={style}
+                  >
+                    {tokens.map((line, i) => (
+                      <div key={i} {...getLineProps({ line })}>
+                        {line.map((token, key) => (
+                          <span key={key} {...getTokenProps({ token })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
             );
           },
           h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-6 mb-4" {...props} />,
