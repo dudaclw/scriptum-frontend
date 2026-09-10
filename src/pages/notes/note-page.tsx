@@ -35,6 +35,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MarkdownPreview } from "@/components/ui/markdown-preview";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Tag } from "@/domain/entities/tag";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useNote } from "@/hooks/use-note";
@@ -398,16 +400,29 @@ export function NotePage() {
           Editado em: {formatDate(note.modifiedAt)}
         </p>
 
-        <TextareaAutosize
-          value={content}
-          onChange={(e) => {
-            dirtyRef.current = true;
-            setContent(e.target.value);
-          }}
-          placeholder="Comece a escrever..."
-          minRows={10}
-          className="w-full resize-none border-0 bg-transparent font-mono text-base outline-none placeholder:text-muted-foreground"
-        />
+        <Tabs defaultValue="write">
+          <TabsList className="mb-2 grid w-[200px] grid-cols-2">
+            <TabsTrigger value="write">Editar</TabsTrigger>
+            <TabsTrigger value="preview">Visualizar</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="write">
+            <TextareaAutosize
+              value={content}
+              onChange={(e) => {
+                dirtyRef.current = true;
+                setContent(e.target.value);
+              }}
+              placeholder="Comece a escrever..."
+              minRows={10}
+              className="w-full resize-none border-0 bg-transparent font-mono text-base outline-none placeholder:text-muted-foreground"
+            />
+          </TabsContent>
+
+          <TabsContent value="preview" className="min-h-[240px]">
+            <MarkdownPreview content={content || "*Nada para pré-visualizar*"} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <div className="flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground shrink-0">
