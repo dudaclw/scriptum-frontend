@@ -8,7 +8,9 @@ export const userSchema = z.object({
     .string({ required_error: "Nome é obrigatório." })
     .min(2, "Nome deve ter pelo menos 2 caracteres.")
     .max(100, "Nome pode ter no máximo 100 caracteres."),
-  // avatarUrl: z.string().url("URL do avatar inválida.").optional(),
+  // Aceita qualquer string: a validação de URL foi removida de propósito
+  // porque o backend trata avatar vazio ou parcial.
+  avatarUrl: z.string().optional(),
 });
 
 export const userSchemaWithPassword = userSchema.extend({

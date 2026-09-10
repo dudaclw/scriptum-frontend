@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from 'react';
 import { useNote } from '@/hooks/use-note';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { Button } from '@/components/ui/button';
@@ -9,9 +10,10 @@ import { Loader2, Edit, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getContrastTextColor } from '@/lib/utils';
 
-export default function NotePage({ params }: { params: { noteId: string } }) {
+export default function NotePage({ params }: { params: Promise<{ noteId: string }> }) {
+  const { noteId } = use(params);
   const { isAuthenticated, isChecking } = useAuthGuard();
-  const { note, isLoading } = useNote(params.noteId);
+  const { note, isLoading } = useNote(noteId);
   const router = useRouter();
 
   const formatDate = (date: Date | string) => {

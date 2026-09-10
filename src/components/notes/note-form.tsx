@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type NoteFormValues, noteSchema } from "@/schemas/notes-schema";
+import {
+  type NoteFormInput,
+  type NoteFormValues,
+  noteSchema,
+} from "@/schemas/notes-schema";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -53,7 +57,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
   const { createNote, updateNote, getNoteById } = useNotesApi();
   const { user } = useAuthStore();
 
-  const form = useForm<NoteFormValues>({
+  const form = useForm<NoteFormInput, undefined, NoteFormValues>({
     resolver: zodResolver(noteSchema),
     defaultValues: initialData || DEFAULT_NOTE_VALUES,
   });
@@ -64,11 +68,12 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
 
   // Carrega os dados da nota se for edição
   useEffect(() => {
-    if (!initialData?.id) return;
-    
+    const noteId = initialData?.id;
+    if (!noteId) return;
+
     const loadNote = async () => {
       try {
-        const note = await getNoteById(initialData.id);
+        const note = await getNoteById(noteId);
         
         if (note) {
           form.reset({
@@ -291,7 +296,7 @@ export function NoteForm({ initialData, onSuccess }: NoteFormProps) {
                         <FormLabel>Cor</FormLabel>
                         <FormControl>
                           <ColorPicker
-                            value={field.value}
+                            value={field.value ?? "#FFFFFF"}
                             onChange={field.onChange}
                           />
                         </FormControl>
