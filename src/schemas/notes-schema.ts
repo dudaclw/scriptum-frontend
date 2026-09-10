@@ -8,4 +8,7 @@ export const noteSchema = z.object({
 	isPinned: z.boolean().default(false),
 });
 
-export type NoteFormValues = z.infer<typeof noteSchema>;
+// `content`, `color`, `tags` e `isPinned` têm default, então o tipo de entrada
+// do formulário aceita esses campos ausentes e o de saída sempre os contém.
+export type NoteFormInput = z.input<typeof noteSchema>;
+export type NoteFormValues = z.output<typeof noteSchema>;
